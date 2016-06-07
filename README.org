@@ -1,0 +1,42 @@
+* Docker and AWS Elastic Beanstalk CLI (awsebcli)
+
+Why?
+
+- Why not
+- You do not want to install awsebcli on your system
+- Automate builds w/ Jenkins w/o affecting the jenkins envrionment
+
+* Build docker image locally
+
+#+BEGIN_SRC sh
+docker build -t eb .
+#+END_SRC
+
+* Setup
+
+There are 2 steps that are required to be performed:
+
+- handling the AWS credentials
+- handling the code
+
+** Passing AWS credentials
+
+The AWS credentials can be passed with the environment variables or via the config file.
+
+#+BEGIN_SRC sh
+docker run -ti --rm -v ~/.aws:/root/.aws:ro eb list
+docker run -ti --rm -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY v ~/.aws:/root/.aws:ro eb list
+#+END_SRC
+
+
+** Handling the app code
+
+Let's assume that the app to be deployed is inside the src/ folder. We would mount the volume at operate
+it.
+
+#+BEGIN_SRC sh
+docker run -ti --rm --volume `pwd`/src:/aws/ --volume ~/.aws:/root/.aws:ro eb init
+docker run -ti --rm --volume `pwd`/src:/aws/ --volume ~/.aws:/root/.aws:ro eb list
+#+END_SRC
+
+
